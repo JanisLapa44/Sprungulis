@@ -9,21 +9,29 @@ import { EditorState } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript'; // ?
 
 
-function CodeEditor() {
+function CodeEditor({onChange , initialDoc}) {
     const editorRef = useRef(null);
     const viewRef = useRef(null);
 
     useEffect(() => {
         if(!editorRef.current) return;
-
-
+        
         const state = EditorState.create({
-            doc: '// write your code here\nconst hello = "world";',
+            doc: '// write your code here\nconst hello = "world";\nconsole.log(hello);',
             extensions: [
                 basicSetup,
                 javascript(),
+                EditorView.updateListener.of((update) => {
+                    if (update.docChanged && typeof onChange === 'function') {
+                        onChange(update.state.doc.toString());
+                    }
+                })
             ]
         });
+
+        if (!typeof onChange === 'function') {
+            onChange(state.doc.toString());
+        }
 
         const view = new EditorView({
             state,
@@ -35,7 +43,7 @@ function CodeEditor() {
         return () => {
             view.destroy();
         }
-    }, []);
+    }, [initialDoc, onChange]);
 
     return (
         <div

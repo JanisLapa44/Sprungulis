@@ -32,6 +32,43 @@
   color: #61dafb;
 }
 
+
+.editor-row {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.controls {
+  margin: 12px 0 20px;
+}
+
+.output-box {
+  height: 500px;
+  width: 500px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  background: #f7f7f7;
+  text-align: left;
+}
+
+.output-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.output-text {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+.output-error {
+  color: #b00020;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

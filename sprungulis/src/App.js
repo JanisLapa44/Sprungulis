@@ -1,13 +1,64 @@
 //import logo from './logo.svg';
 import './App.css';
 import CodeEditor from './codemirror6';
+import React, { useState } from 'react';
+const initialCode = '// write your code here\nconst hello = "world";\nconsole.log(hello);';
 
 function App() {
+  const [code, setCode] = useState(initialCode);
+  const [output, setOutput] = useState('');
+  const [error, setError] = useState('');
+
+  const handleRun = () => {
+    const logs = [];
+    const originalLog = console.log;
+
+    console.log = (...args) => {
+      logs.push(args.map(String).join(' '));
+    };
+
+    try {
+      const fn = new Function(code);
+      const result = fn();
+
+      if (result !== undefined) {
+        logs.push(String(result));
+      }
+
+      setError('');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
+    } finally {
+      console.log = originalLog;
+      setOutput(logs.join('\n'));
+    }
+};
+
+const displayText = error
+  ? `Error: ${error}${output ? '\n' + output : ''}`
+  : output || 'No output yet.';
+
+
+
   return (
     <div className="App">
 
       <h1>CodeMirror 6 editor</h1>
-      <CodeEditor />
+      
+
+      <div className="controls">
+        <button type = "button" onClick={handleRun}>Run Code</button>
+      </div>
+
+      <div className="editor-row">
+        <CodeEditor onChange={setCode} initialDoc={initialCode}/>
+        <div className = "output-box">
+          <pre className={error ? 'output-text output-error' : 'output-text'}>
+            {displayText}
+          </pre>
+        </div>
+      </div>
 
 
 
